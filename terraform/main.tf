@@ -6,8 +6,8 @@ terraform {
 }
 
 provider "proxmox" {
-  endpoint  = "https://IP_ADDRESS/"
-  api_token = "tf@pve!tf=API_KEY"
+  endpoint  = var.server_ip
+  api_token = var.api_key
   insecure = true
   ssh {
     agent    = true
@@ -83,6 +83,3 @@ resource "proxmox_cloned_vm" "dc01" {
     }
   }
 }
-
-
-
