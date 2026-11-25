@@ -49,31 +49,26 @@ resource "proxmox_virtual_environment_vm" "linux_vms" {
     vm_id = 1000
   }
 
-  cpu = { cores = each.value.cores }
-  memory = { size = each.value.mem }
-
-  disk = {
-    scsi0 = {
+  cpu { cores = each.value.cores }
+  memory { dedicated = each.value.mem }
+  disk {
       datastore_id = "local"
-      size_gb = each.value.disk
+      interface    = "scsi0"
+      size         = each.value.disk
     }
+  network_device {
+    bridge = "vmbr102"
+    model = "virtio"
+    vlan_id = each.value.vlan
   }
-  
-  network = {
-    net0 = {
-      bridge = "vmbr102"
-      model = "virtio"
-      vlan_id = each.value.vlan
-    }
-  }
-}
 
+}
 resource "proxmox_cloned_vm" "dc01" {
   clone = {
     source_vm_id = 3000
   }
   name      = "dc01"
-  vm_id     = 510
+  id     = 510
   node_name = "home-server"
   network = {
     net0 = {
