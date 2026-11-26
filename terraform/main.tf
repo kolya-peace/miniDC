@@ -47,6 +47,7 @@ resource "proxmox_virtual_environment_vm" "linux_vms" {
 
   clone {
     vm_id = 1000
+    full = false
   }
 
   cpu { cores = each.value.cores }
