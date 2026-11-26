@@ -66,7 +66,9 @@ resource "proxmox_virtual_environment_vm" "linux_vms" {
   }
   initialization {
     ip_config {
-      address = each.value.ip
+      ipv4 {
+        address = each.value.ip
+      }
     }
   }
   agent {
