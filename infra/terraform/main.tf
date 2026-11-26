@@ -16,11 +16,7 @@ provider "proxmox" {
 }
 
 locals {
-  linux_vms = {
-    ans01     = { id = 511, cores = 2, mem = 2048, disk = 30, vlan = 20, ip = "10.20.0.11/24" }
-    srv-lnx01 = { id = 512, cores = 2, mem = 2048, disk = 30, vlan = 20, ip = "10.20.0.12/24" }
-    cl-lin01  = { id = 520, cores = 2, mem = 2048, disk = 30, vlan = 80, ip = "dhcp" }
-  }
+  hosts     = { for h in yamldecode(file("${path.module}/../topology.yml")).hosts : h.name => h }
 }
 
 #network
@@ -46,12 +42,23 @@ resource "proxmox_network_linux_bridge" "vmbr103" {
   vlan_aware = true
 }
 
+resource "proxmox_network_linux_vlan" "vlan20" {
+  node_name = "home-server"
+  name = "vmbr103.20"
+  interface = "vmbr103"
+  vlan = 20
+  address = "10.10.20.254/24"
+
+
+  comment = "MGMT interface"
+}
+
 resource "proxmox_virtual_environment_vm" "linux_vms" {
-  for_each = local.linux_vms
+  for_each = local.hosts
 
   name = each.key
   node_name = "home-server"
-  vm_id = each.value.id
+  vm_id = each.value.vmid
   tags = ["terraform", "DC"]
 
   clone {
@@ -67,7 +74,7 @@ resource "proxmox_virtual_environment_vm" "linux_vms" {
       size         = each.value.disk
     }
   network_device {
-    bridge = "vmbr102"
+    bridge = "vmbr103"
     model = "virtio"
     vlan_id = each.value.vlan
   }
@@ -75,6 +82,7 @@ resource "proxmox_virtual_environment_vm" "linux_vms" {
     ip_config {
       ipv4 {
         address = each.value.ip
+        gateway = each.value.ip == "dhcp" ? null : cidrhost(each.value.ip, 1)
       }
     }
     user_account {
