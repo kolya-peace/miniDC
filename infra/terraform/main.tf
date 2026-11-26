@@ -28,7 +28,7 @@ locals {
 resource "proxmox_network_linux_bridge" "vmbr101" {
   node_name = "home-server"
   name = "vmbr101"
-  address = "172.16.0.1/24"
+  address = "172.16.0.254/24"
   comment = "DC-NAT"
   vlan_aware = true
 }
@@ -36,7 +36,13 @@ resource "proxmox_network_linux_bridge" "vmbr101" {
 resource "proxmox_network_linux_bridge" "vmbr102" {
   node_name = "home-server"
   name = "vmbr102"
-  comment = "server-LAN"
+  comment = "OPNsense --> GNS3"
+  vlan_aware = true
+}
+resource "proxmox_network_linux_bridge" "vmbr103" {
+  node_name = "home-server"
+  name = "vmbr103"
+  comment = "ServerLAN"
   vlan_aware = true
 }
 
@@ -94,7 +100,7 @@ resource "proxmox_cloned_vm" "dc01" {
   node_name = "home-server"
   network = {
     net0 = {
-      bridge = "vmbr102"
+      bridge = "vmbr103"
       model = "virtio"
       tag = 20
     }
