@@ -46,6 +46,7 @@ resource "proxmox_virtual_environment_vm" "linux_vms" {
   name = each.key
   node_name = "home-server"
   vm_id = each.value.id
+  tags = ["terraform", "DC"]
 
   clone {
     vm_id = 1000
@@ -70,6 +71,10 @@ resource "proxmox_virtual_environment_vm" "linux_vms" {
         address = each.value.ip
       }
     }
+    user_account {
+      username = "user"
+      keys = [trimspace(file("~/.ssh/id_rsa.pub"))]
+    }
   }
   agent {
     enabled = true
@@ -79,6 +84,7 @@ resource "proxmox_virtual_environment_vm" "linux_vms" {
   }  
 }
 resource "proxmox_cloned_vm" "dc01" {
+  tags = ["terraform", "DC"]
   clone = {
     source_vm_id = 3000
     full = false
