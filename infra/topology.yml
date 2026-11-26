@@ -1,8 +1,4 @@
-vlans:
-  - { id: 20, name: SRV,   cidr: 10.10.20.0/24, gateway: 10.10.20.1 }
-  - { id: 80, name: USERS, cidr: 10.10.80.0/24}
 hosts:
-  - { name: dc01,      vmid: 510, os: windows, vlan: 20, ip: 10.10.20.10, tags: [prod, srv] }
-  - { name: ans01,     vmid: 511, os: debian,  vlan: 20, ip: 10.10.20.20, cores: 2, mem: 2048, disk: 30, tags: [prod, srv] }
-  - { name: srv-lnx01, vmid: 512, os: debian,  vlan: 20, ip: 10.10.20.21, cores: 2, mem: 2048, disk: 30, tags: [prod, srv] }
-  - { name: cl-lin01,  vmid: 520, os: debian,  vlan: 80, ip: dhcp,        cores: 2, mem: 2048, disk: 30, tags: [prod] }
+  - { name: ans01,     vmid: 511, os: debian,  vlan: 20, ip: 10.10.20.20/24, cores: 2, mem: 2048, disk: 30, tags: [dc, srv] }
+  - { name: srv-lnx01, vmid: 512, os: debian,  vlan: 20, ip: 10.10.20.21/24, cores: 2, mem: 2048, disk: 30, tags: [dc, srv] }
+  - { name: cl-lin01,  vmid: 520, os: debian,  vlan: 80, ip: dhcp, cores: 2, mem: 2048, disk: 30, tags: [dc] }
