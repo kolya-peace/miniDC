@@ -30,12 +30,14 @@ resource "proxmox_network_linux_bridge" "vmbr101" {
   name = "vmbr101"
   address = "172.16.0.1/24"
   comment = "DC-NAT"
+  vlan_aware = true
 }
 
 resource "proxmox_network_linux_bridge" "vmbr102" {
   node_name = "home-server"
   name = "vmbr102"
   comment = "server-LAN"
+  vlan_aware = true
 }
 
 resource "proxmox_virtual_environment_vm" "linux_vms" {
