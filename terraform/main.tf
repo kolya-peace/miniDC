@@ -64,11 +64,22 @@ resource "proxmox_virtual_environment_vm" "linux_vms" {
     model = "virtio"
     vlan_id = each.value.vlan
   }
-
+  initialization {
+    ip_config {
+      address = each.value.ip
+    }
+  }
+  agent {
+    enabled = true
+    wait_for_ip {
+      disables = true
+    }
+  }  
 }
 resource "proxmox_cloned_vm" "dc01" {
   clone = {
     source_vm_id = 3000
+    full = false
   }
   name      = "dc01"
   id     = 510
