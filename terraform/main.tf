@@ -74,7 +74,7 @@ resource "proxmox_virtual_environment_vm" "linux_vms" {
   agent {
     enabled = true
     wait_for_ip {
-      disables = true
+      disabled = true
     }
   }  
 }
